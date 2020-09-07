@@ -1,9 +1,17 @@
 const express = require('express');
 const app = express();
+const { config } = require('./config/index');
+
+const postsApi = require('./routes/posts')
+
 
 // Body parser
 app.use(express.json());
 
-app.listen(3000, () => {
-  console.log(`Listening on http://localhost:3000`)
-})
+// Routes
+postsApi(app)
+
+app.listen(config.port, () => {
+  // eslint-disable-next-line no-console
+  console.log(`Listening on http://localhost:${config.port}`)
+});
