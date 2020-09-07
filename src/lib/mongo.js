@@ -14,7 +14,7 @@ class MongoLib {
       useNewUrlParser: true,
     });
     this.dbName = DB_NAME;
-  };
+  }
 
   connect() {
     if (!MongoLib.connection) {
@@ -29,22 +29,31 @@ class MongoLib {
           resolve(this.client.db(this.dbName));
         });
       });
-    }
+    };
 
     return MongoLib.connection;
-  }
+  };
 
   getAll(collection, query) {
     return this.connect().then((db) => {
       return db.collection(collection).find(query).toArray();
     });
-  }
+  };
+
+  get(collection, id) {
+    return this.connect().then((db) => {
+      return db.collection(collection).findOne({ _id: ObjectId(id) });
+    });
+  };
+
 
   create(collection, data) {
     return this.connect().then((db) => {
-      return db.collection(collection).insertOne(data);
-    });
-  }
-}
+      return db.collection(collection).insertOne(data)
+    })
+    .then((result) => result.insertedId);
+  };
+
+};
 
 module.exports = MongoLib;
