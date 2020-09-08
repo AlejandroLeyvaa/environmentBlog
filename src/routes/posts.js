@@ -1,21 +1,21 @@
-const express = require("express");
-const PostsService = require("../services/posts");
+const express = require('express');
+const PostsService = require('../services/posts');
 
 const {
   postIdSchema,
   createPostSchema,
   updatePostSchema,
-} = require("../utils/schemas/posts");
+} = require('../utils/schemas/posts');
 
-const validationHandler = require("../utils/middleware/validationHandler");
+const validationHandler = require('../utils/middleware/validationHandler');
 
 const postsApi = (app) => {
   const router = express.Router();
-  app.use("/api/posts", router);
+  app.use('/api/posts', router);
 
   const postsService = new PostsService();
 
-  router.get("/", async (req, res, next) => {
+  router.get('/', async (req, res, next) => {
     const { tags } = req.query;
 
     try {
@@ -23,7 +23,7 @@ const postsApi = (app) => {
 
       res.status(200).json({
         data: posts,
-        message: "posts listed",
+        message: 'posts listed',
       });
     } catch (err) {
       next(err);
@@ -31,8 +31,8 @@ const postsApi = (app) => {
   });
 
   router.get(
-    "/:postId",
-    validationHandler({ postId: postIdSchema }, "params"),
+    '/:postId',
+    validationHandler({ postId: postIdSchema }, 'params'),
     async (req, res, next) => {
       const { postId } = req.params;
 
@@ -41,7 +41,7 @@ const postsApi = (app) => {
 
         res.status(200).json({
           data: posts,
-          message: "post retrieved",
+          message: 'post retrieved',
         });
       } catch (err) {
         next(err);
@@ -50,7 +50,7 @@ const postsApi = (app) => {
   );
 
   router.post(
-    "/",
+    '/',
     validationHandler(createPostSchema),
     async (req, res, next) => {
       const { body: post } = req;
@@ -60,7 +60,7 @@ const postsApi = (app) => {
 
         res.status(201).json({
           data: createdPost,
-          message: "post created",
+          message: 'post created',
         });
       } catch (err) {
         next(err);
@@ -69,7 +69,7 @@ const postsApi = (app) => {
   );
 
   router.put(
-    "/:postId",
+    '/:postId',
     validationHandler({ postId: postIdSchema }, 'params'),
     validationHandler(updatePostSchema),
     async (req, res, next) => {
@@ -84,7 +84,7 @@ const postsApi = (app) => {
 
         res.status(200).json({
           data: updatedPostId,
-          message: "post updated",
+          message: 'post updated',
         });
       } catch (err) {
         next(err);
@@ -93,8 +93,8 @@ const postsApi = (app) => {
   );
 
   router.delete(
-    "/:postId",
-    validationHandler({ postId: postIdSchema }, "params"),
+    '/:postId',
+    validationHandler({ postId: postIdSchema }, 'params'),
     async (req, res, next) => {
       const { postId } = req.params;
 
@@ -103,7 +103,7 @@ const postsApi = (app) => {
 
         res.status(200).json({
           data: deletePostId,
-          message: "post deleted",
+          message: 'post deleted',
         });
       } catch (err) {
         next(err);

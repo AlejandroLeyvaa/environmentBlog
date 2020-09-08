@@ -1,5 +1,5 @@
-const { MongoClient, ObjectId } = require("mongodb");
-const { config } = require("../config");
+const { MongoClient, ObjectId } = require('mongodb');
+const { config } = require('../config');
 
 const USER = encodeURIComponent(config.dbUser);
 const PASSWORD = encodeURIComponent(config.dbPassword);
@@ -25,34 +25,34 @@ class MongoLib {
           }
 
           // eslint-disable-next-line no-console
-          console.log("Connected succesfully to mongo");
+          console.log('Connected succesfully to mongo');
           resolve(this.client.db(this.dbName));
         });
       });
-    };
+    }
 
     return MongoLib.connection;
-  };
+  }
 
   getAll(collection, query) {
     return this.connect().then((db) => {
       return db.collection(collection).find(query).toArray();
     });
-  };
+  }
 
   get(collection, id) {
     return this.connect().then((db) => {
       return db.collection(collection).findOne({ _id: ObjectId(id) });
     });
-  };
-
+  }
 
   create(collection, data) {
-    return this.connect().then((db) => {
-      return db.collection(collection).insertOne(data)
-    })
-    .then((result) => result.insertedId);
-  };
+    return this.connect()
+      .then((db) => {
+        return db.collection(collection).insertOne(data);
+      })
+      .then((result) => result.insertedId);
+  }
 
   update(collection, id, data) {
     return this.connect()
@@ -62,7 +62,7 @@ class MongoLib {
           .updateOne({ _id: ObjectId(id) }, { $set: data }, { upsert: true });
       })
       .then((result) => result.upsertedId || id);
-  };
+  }
 
   delete(collection, id) {
     return this.connect()
@@ -70,8 +70,7 @@ class MongoLib {
         return db.collection(collection).deleteOne({ _id: ObjectId(id) });
       })
       .then(() => id);
-  };
-
-};
+  }
+}
 
 module.exports = MongoLib;

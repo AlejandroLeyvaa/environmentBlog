@@ -9,7 +9,7 @@ const postAuthor = joi.string().min(5).max(64);
 const createPostSchema = {
   title: postTitleSchema.required(),
   content: postContent.required(),
-  image: postImage.required(),
+  image: postImage,
   author: postAuthor.required(),
 };
 
