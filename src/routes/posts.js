@@ -1,4 +1,5 @@
 const express = require('express');
+const passport = require('passport');
 const PostsService = require('../services/posts');
 
 const {
@@ -8,6 +9,11 @@ const {
 } = require('../utils/schemas/posts');
 
 const validationHandler = require('../utils/middleware/validationHandler');
+const scopesValidationHandler = require('../utils/middleware/scopesValidationHandler');
+
+
+// JWT strategy
+require('../utils/auth/strategies/jwt');
 
 const postsApi = (app) => {
   const router = express.Router();
@@ -15,7 +21,10 @@ const postsApi = (app) => {
 
   const postsService = new PostsService();
 
-  router.get('/', async (req, res, next) => {
+  router.get('/',
+  passport.authenticate('jwt', { session: false }),
+  scopesValidationHandler(['read:posts']),
+  async (req, res, next) => {
     const { tags } = req.query;
 
     try {
@@ -32,6 +41,8 @@ const postsApi = (app) => {
 
   router.get(
     '/:postId',
+    passport.authenticate('jwt', { session: false }),
+    scopesValidationHandler(['read:posts']),
     validationHandler({ postId: postIdSchema }, 'params'),
     async (req, res, next) => {
       const { postId } = req.params;
@@ -51,6 +62,8 @@ const postsApi = (app) => {
 
   router.post(
     '/',
+    passport.authenticate('jwt', { session: false }),
+    scopesValidationHandler(['create:posts']),
     validationHandler(createPostSchema),
     async (req, res, next) => {
       const { body: post } = req;
@@ -70,6 +83,8 @@ const postsApi = (app) => {
 
   router.put(
     '/:postId',
+    passport.authenticate('jwt', { session: false }),
+    scopesValidationHandler(['update:post']),
     validationHandler({ postId: postIdSchema }, 'params'),
     validationHandler(updatePostSchema),
     async (req, res, next) => {
@@ -94,6 +109,9 @@ const postsApi = (app) => {
 
   router.delete(
     '/:postId',
+    passport.authenticate('jwt', { session: false }),
+    scopesValidationHandler(['delete:posts']),
+
     validationHandler({ postId: postIdSchema }, 'params'),
     async (req, res, next) => {
       const { postId } = req.params;
