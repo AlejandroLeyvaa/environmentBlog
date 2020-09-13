@@ -11,6 +11,11 @@ const {
 const validationHandler = require('../utils/middleware/validationHandler');
 const scopesValidationHandler = require('../utils/middleware/scopesValidationHandler');
 
+const FIVE_MINUTES_IN_SECONDS = 300;
+const SIXTY_MINUTES_IN_SECONDS = 3600;
+
+const cacheResponse = require('../utils/cacheResponse');
+
 
 // JWT strategy
 require('../utils/auth/strategies/jwt');
@@ -25,6 +30,7 @@ const postsApi = (app) => {
   passport.authenticate('jwt', { session: false }),
   scopesValidationHandler(['read:posts']),
   async (req, res, next) => {
+    cacheResponse(res, FIVE_MINUTES_IN_SECONDS);
     const { tags } = req.query;
 
     try {
@@ -45,6 +51,7 @@ const postsApi = (app) => {
     scopesValidationHandler(['read:posts']),
     validationHandler({ postId: postIdSchema }, 'params'),
     async (req, res, next) => {
+      cacheResponse(res, SIXTY_MINUTES_IN_SECONDS);
       const { postId } = req.params;
 
       try {
